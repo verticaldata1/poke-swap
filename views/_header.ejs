@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>verticaldata1's pokemon trading</title>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/main.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  </head>
+  
+  <body>
+    <div class="navbar navbar-default navbar-static-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/">Home</a>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+          <% if(currentUser) { %>
+            <% var profileLink="/profile/"+currentUser.username; %>
+            <li><a href=<%=profileLink%>><%= currentUser.username %></a></li>
+            <li><a href="/logout">Log out</a></li>
+          <% } else { %>
+            <li><a href="/signup">Sign up</a></li>
+            <li><a href="/login">Log in</a></li>            
+          <% } %>
+        </ul>
+      </div>
+    </div>
+    <div class="container-fluid" style="max-width: 50%; margin: auto">
+      <% errors.forEach(function(error) { %>
+        <div class="alert alert-danger" role="alert">
+          <%= error %>  
+        </div>
+      <% }) %>
+    </div>

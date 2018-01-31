@@ -1,0 +1,20 @@
+<% include _header %>
+
+<div class="jumbotron text-center" style="max-width: 80%; margin: auto">
+  <h4><%=username%><br><br></h4>
+  <img class="profile-image" alt="Profile Picture" src="https://vignette.wikia.nocookie.net/pokemon/images/b/b5/Rainbow_Badge.png/revision/latest?cb=20141009005938">
+  <h4><br>age: <%=age%><br></h4>
+  <h4>location: <%=location%><br><br></h4>
+  <% if(currentUser.username == username) { %>
+    <form action="/addCard" method="post">
+      <label for="add-pokemon" style="font-size:16px">Catch a new pokemon:</label>
+      <input id="add-pokemon" name="pokemon" type="text" placeholder="Pokemon name" required>
+      <input type="submit" value="Catch" class="btn btn-primary btn-sm">
+    </form>
+  <% } %>
+  <h4><br><%=username%>'s cards:<br><br></h4>
+  
+</div>
+
+</body>
+</html>

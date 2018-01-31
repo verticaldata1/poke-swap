@@ -1,0 +1,17 @@
+<% include _header %>
+
+<div class="jumbotron" style="max-width: 80%; margin: auto">
+  <div class="text-center">
+    <h1>Collect and Trade Pokemon Cards!</h1>
+
+    <% if(currentUser) { %>
+        <a href="/new-poll" class="btn btn-primary">New Poll</a>
+    <% } else { %>
+        <h3>Sign in to start</h3>
+    <% } %>
+  </div>  
+  
+</div>
+
+</body>
+</html>
