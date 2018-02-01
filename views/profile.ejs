@@ -11,9 +11,9 @@
     <% } %>
   </div>
   <div id="setAgeDiv" style="display: none">  
-    <h4 style='display: inline'><br></h4>
-    <input id='ageInput' type='text' placeholder='Age'>
-    <button id='setAge' type='button' class = 'btn btn-primary btn-sm'>OK</button>    
+    <h4 style="display: inline"><br></h4>
+    <input id="ageInput" type="text" placeholder="Age">
+    <button id="setAge" type="button" class = "btn btn-primary btn-sm">OK</button>    
   </div>    
     
   <div id="viewLocationDiv">  
@@ -24,9 +24,9 @@
     <h4><br></h4>
   </div>
   <div id="setLocationDiv" style="display: none">  
-    <h4 style='display: inline'><br></h4>
-    <input id='locationInput' type='text' placeholder='Location'>
-    <button id='setLocation' type='button' class = 'btn btn-primary btn-sm'>OK</button>
+    <h4 style="display: inline"><br></h4>
+    <input id="locationInput" type="text" placeholder="Location">
+    <button id="setLocation" type="button" class = "btn btn-primary btn-sm">OK</button>
     <h4><br></h4>
   </div>
   
@@ -36,6 +36,8 @@
       <input id="add-pokemon" name="pokemon" type="text" placeholder="Pokemon name" required>
       <input type="submit" value="Catch" class="btn btn-primary btn-sm">
     </form>
+  <% } else if(currentUser) { %>
+    <a href="/newTrade/<%=username%>" class="btn btn-primary btn-sm">Request Trade</a> 
   <% } %>
   <h4><br><br><%=username%>'s cards:<br><br></h4>
   <div class = "flex-container">

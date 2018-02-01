@@ -1,0 +1,28 @@
+<% include _header %>
+
+<div class="jumbotron text-center" style="max-width: 80%; margin: auto">
+  <h4>Incoming requests to trade with you:<br><br></h4>
+  <% inTrades.forEach(function(trade) { %>
+    <div  class="flex-trade-group">
+      <div class="flex-trade-item">
+        <p><%=trade.initiator%> wants your</p>
+      </div>
+      <div class="flex-trade-item">
+        <img class="card-image" alt="image result" src="<%=trade.rCardImg%>">
+      </div>
+      <div class="flex-trade-item">
+        <p> for </p>
+      </div>
+      <div class="flex-trade-item">
+        <img class="card-image" alt="image result" src="<%=trade.iCardImg%>">
+      </div>
+    </div>
+  
+  <% }) %>
+  
+  
+</div>
+
+
+</body>
+</html>

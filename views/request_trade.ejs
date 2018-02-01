@@ -1,0 +1,59 @@
+<% include _header %>
+
+<div class="text-center" style="max-width: 60%; margin: auto;">
+  <h3>Trade Request</h3>
+  
+  <div  class="flex-select-group">
+    <div class="flex-select">
+      <h4>Your cards:</h4>
+      <select name="initiatorSelect" id="initiator-selections" class="card-selection">
+        <% for(var x = 0; x < initiatorCards.length; x++) { %>
+          <option>Card <%=x%></option>
+        <% } %>        
+      </select>
+      <p style="margin-bottom: 0px;"><br></p>
+      <% for(var x = 0; x < initiatorCards.length; x++) { %>
+        <p style="margin-top: 15px; margin-bottom: 0px;">Card <%=x%></p>
+        <img class="card-select-image" alt="image result" src="<%= initiatorCards[x] %>">   
+      <% } %>  
+    </div>
+    <button id="tradeStart" type="button" class="btn btn-primary btn-sm" style="height: 50px; margin-top: 30px;">Let's Swap!</button>
+    <div class="flex-select">
+      <h4><%=recipient%>'s cards:</h4>
+      <select name="recipientSelect" id="recipient-selections" class="card-selection">
+        <% for(var x = 0; x < recipientCards.length; x++) { %>
+          <option>Card <%=x%></option>
+        <% } %>        
+      </select>
+      <p style="margin-bottom: 0px;"><br></p>
+      <% for(var x = 0; x < recipientCards.length; x++) { %>
+        <p style="margin-top: 15px; margin-bottom: 0px;">Card <%=x%></p>
+        <img class="card-select-image" alt="image result" src="<%= recipientCards[x] %>">   
+      <% } %>  
+    </div>
+  </div>
+  
+</div>
+
+<script>  
+  $("#tradeStart").click(function() {
+    var initiatorSelect = document.getElementById("initiator-selections");
+    var recipientSelect = document.getElementById("recipient-selections");
+    var iCards = <%-JSON.stringify(initiatorCardIds)%>;
+    var rCards = <%-JSON.stringify(recipientCardIds)%>;
+    var iCardsImg = <%-JSON.stringify(initiatorCards)%>;
+    var rCardsImg = <%-JSON.stringify(recipientCards)%>;
+    var iIdx = initiatorSelect.selectedIndex;
+    var rIdx = recipientSelect.selectedIndex;
+
+    $.post('/tradeSubmit', {initiator: "<%=initiator%>", recipient: "<%=recipient%>", iCard: iCards[iIdx], rCard: rCards[rIdx], iCardImg: iCardsImg[iIdx], rCardImg: rCardsImg[rIdx]}, function() {
+      console.log("tradeSubmit done");
+      window.alert("Trade request sent");
+      window.location.href = "/profile/<%=recipient%>";                      
+    }); 
+  });
+  
+</script>
+
+</body>
+</html>

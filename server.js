@@ -10,6 +10,7 @@ var fetch = require("node-fetch");
 var setUpPassport = require("./setuppassport");
 var User = require("./models/user");
 var Card = require("./models/card");
+var Trade = require("./models/trade");
 var app = express();
 
 app.set("views", path.resolve(__dirname, "views"));
@@ -34,7 +35,28 @@ app.use(passport.session());
 app.use(function(req, res, next) {
   res.locals.currentUser = req.user;
   res.locals.errors = req.flash("error");
-  next();
+  res.locals.incomingTrades = 0;
+  res.locals.outgoingTrades = 0;
+  
+  if(req.isAuthenticated()) {
+    Trade.find({initiator: req.user.username}, function(err, trades) {
+      if(err) { return next("Database error"); }
+      if(trades) {
+        res.locals.outgoingTrades = trades.length;
+      }
+      Trade.find({recipient: req.user.username}, function(err, trades) {
+        if(err) { return next("Database error"); }
+        if(trades) {
+          res.locals.incomingTrades = trades.length;
+        }
+        next();
+      });
+    });
+  }
+  else {
+    next();    
+  }  
+  
 });
 
 app.get("/", function (req, res, next) {
@@ -42,7 +64,6 @@ app.get("/", function (req, res, next) {
   var allOwners = [];
   Card.find({}, function(err, cards) {
     if(err) { return next("Database error"); }
-    console.log("Database found cards="+cards);
     for(var ii = 0; ii < cards.length; ii++) {
       allImages.push(cards[ii].image);
       allOwners.push(cards[ii].owner);
@@ -52,6 +73,68 @@ app.get("/", function (req, res, next) {
     res.render("index");
   }); 
     
+});
+
+app.get("/newTrade/:username", isAuthenticated, function(req, res, next) {
+  var recipient = req.params.username;
+  var initiator = res.locals.currentUser.username;
+  
+  if(recipient == initiator) {
+    next("Can't trade with yourself");
+    return;
+  }
+  
+  var initiatorCards = [];
+  var initiatorCardIds = [];
+  var recipientCards = [];
+  var recipientCardIds = [];
+  
+  Card.find({owner: initiator}, function(err, cards) {
+    if(err) { return next("Database error"); }
+    for(var ii = 0; ii < cards.length; ii++) {
+      initiatorCards.push(cards[ii].image);
+      initiatorCardIds.push(cards[ii]._id);
+    }
+    res.locals.initiatorCards = initiatorCards;
+    
+    Card.find({owner: recipient}, function(err, cards) {
+      if(err) { return next("Database error"); }
+      for(var ii = 0; ii < cards.length; ii++) {
+        recipientCards.push(cards[ii].image);
+        recipientCardIds.push(cards[ii]._id);
+      }
+      res.locals.recipientCards = recipientCards;
+      res.locals.recipient = recipient;
+      res.locals.initiator = initiator;
+      res.locals.initiatorCardIds = initiatorCardIds;
+      res.locals.recipientCardIds = recipientCardIds;
+      res.render("request_trade");
+    });
+    
+  });    
+});
+
+app.post("/tradeSubmit", isAuthenticated, function(req, res, next) {
+  var initiator = req.body.initiator;
+  var recipient = req.body.recipient;
+  var iCardId = req.body.iCard;
+  var rCardId = req.body.rCard;
+  var iCardImg = req.body.iCardImg;
+  var rCardImg = req.body.rCardImg;
+  
+  console.log("tradeSubmit received: "+initiator+", " + recipient + ", " + iCardImg + ", " + rCardImg);
+  var newTrade = new Trade({
+    initiator: initiator,
+    recipient: recipient,
+    iCard: iCardId,
+    rCard: rCardId,
+    iCardImg: iCardImg,
+    rCardImg: rCardImg
+  });      
+  newTrade.save(function(err, _newTrade) {
+    if(err) { return next("Database error: "+err); }    
+    res.sendStatus(200);
+  });  
 });
 
 app.get("/profile/:username", function(req, res, next) {
@@ -68,16 +151,23 @@ app.get("/profile/:username", function(req, res, next) {
       var cardImages = [];
       Card.find({owner: res.locals.username}, function(err, cards) {
         if(err) { return next("Database error"); }
-        console.log("Database found cards="+cards);
         for(var ii = 0; ii < cards.length; ii++) {
           cardImages.push(cards[ii].image);
         }
-        console.log("cardImages="+cardImages);
         res.locals.cardImages = cardImages;
         res.render("profile");
       });      
       
     }
+  });
+});
+
+app.get("/incomingTrades", isAuthenticated, function(req, res, next) {
+
+  Trade.find({recipient: req.user.username}, function(err, trades) {
+    if(err) { return next("Database error"); }
+    res.locals.inTrades = trades;
+    res.render("incoming_trades");
   });
 });
 
