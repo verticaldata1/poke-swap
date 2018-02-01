@@ -2,13 +2,16 @@
 
 <div class="jumbotron" style="max-width: 80%; margin: auto">
   <div class="text-center">
-    <h1>Collect and Trade Pokemon Cards!</h1>
+    <h1>Collect and Trade Pokemon Cards!<br><br></h1>
 
-    <% if(currentUser) { %>
-        <a href="/new-poll" class="btn btn-primary">New Poll</a>
-    <% } else { %>
-        <h3>Sign in to start</h3>
-    <% } %>
+    <div class = "flex-container">      
+        <% allImages.forEach(function(image, ii) { %>
+        <div class="flex-item">     
+          <img class="card-image" alt="image result" src="<%= image %>">   
+          <a href="/profile/<%=allOwners[ii]%>" style="color: blue" >Owner: <%=allOwners[ii]%></a> 
+        </div>
+        <% }) %>      
+    </div>
   </div>  
   
 </div>

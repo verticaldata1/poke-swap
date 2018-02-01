@@ -5,8 +5,8 @@ var mongoose = require("mongoose");
 var userSchema = mongoose.Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true},
-  age: { type: String, required: true},
-  location: { type: String, required: true},  
+  age: { type: String, required: false},
+  location: { type: String, required: false},  
   cards: { type : Array , "default" : [] }
 });
 
