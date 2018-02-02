@@ -333,18 +333,24 @@ app.post("/signup", function(req, res, next) {
   var username = req.body.username;
   var password = req.body.password;
   
-  User.findOne({username: username}, function(err, user) {
-    if(err) { return next(err); }
-    if(user) {
-      req.flash("error", "Username taken");
-      return res.redirect("/signup");
-    }
-    var newUser = new User({
-      username: username,
-      password: password
+  if(username.length > 20) {
+    req.flash("error", "Keep username under 20 characters!");
+    res.redirect("/signup");
+  }
+  else {
+    User.findOne({username: username}, function(err, user) {
+      if(err) { return next(err); }
+      if(user) {
+        req.flash("error", "Username taken");
+        return res.redirect("/signup");
+      }
+      var newUser = new User({
+        username: username,
+        password: password
+      });
+      newUser.save(next);
     });
-    newUser.save(next);
-  });
+  }
 }, passport.authenticate("login", {
   successRedirect: "/",
   failureRedirect: "/signup",
