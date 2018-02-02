@@ -1,5 +1,40 @@
 <% include _header %>
 
+<div class="jumbotron text-center" style="max-width: 80%; margin: auto">
+  <h4>Your pending requests to trade with others:<br><br></h4>
+  <% outTrades.forEach(function(trade) { %>
+    <div  class="flex-trade-group" style="margin-bottom: 30px;">
+      <div class="flex-trade-item">
+        <p style="margin:auto">You requested <%=trade.recipient%>'s:</p>
+        <img class="card-image" style="margin:auto" alt="image result" src="<%=trade.rCardImg%>">
+      </div>
+      <div class="flex-trade-item" style="margin-left: 20px">
+        <p style="margin:auto">in exchange for your:</p>
+        <img class="card-image" style="margin:auto" alt="image result" src="<%=trade.iCardImg%>">
+      </div>
+      <div class="flex-trade-item">
+        <button id="decline_<%=trade._id%>" style="margin:auto" type="button" class = "btn btn-primary btn-sm">Cancel Trade</button>
+      </div>
+    </div>
+  
+  <% }) %>
+  
+  
+</div>
+
+<script>  
+  
+<% outTrades.forEach(function(trade) { %>
+  $("#decline_<%=trade._id%>").click(function() {
+    var theTrade = <%-JSON.stringify(trade)%>;    
+    $.post("/tradeDecline", {trade_id: theTrade._id}, function() {
+      window.alert("Trade cancelled");
+      window.location.href = "/profile/<%=trade.initiator%>";      
+    }); 
+  });
+<% }) %>
+  
+</script>
 
 </body>
 </html>

@@ -21,14 +21,14 @@
 .flex-select-group{
   display: flex; 
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: center;
 }
 .flex-select {
   display: flex;
   flex-wrap: nowrap;
   flex-direction: column;
   height: 400px;
-  width: 300px;
+  width: 250px;
 }
 .card-selection {
   min-height: 40px;

@@ -1,6 +1,6 @@
 <% include _header %>
 
-<div class="text-center" style="max-width: 60%; margin: auto;">
+<div class="text-center" style="max-width: 80%; margin: auto">
   <h3>Trade Request</h3>
   
   <div  class="flex-select-group">
@@ -17,7 +17,7 @@
         <img class="card-select-image" alt="image result" src="<%= initiatorCards[x] %>">   
       <% } %>  
     </div>
-    <button id="tradeStart" type="button" class="btn btn-primary btn-sm" style="height: 50px; margin-top: 30px;">Let's Swap!</button>
+    <button id="tradeStart" type="button" class="btn btn-primary btn-sm" style="height: 50px; margin-top: 30px; margin-left: 50px; margin-right: 50px">Let's Swap!</button>
     <div class="flex-select">
       <h4><%=recipient%>'s cards:</h4>
       <select name="recipientSelect" id="recipient-selections" class="card-selection">

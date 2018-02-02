@@ -3,22 +3,20 @@
 <div class="jumbotron text-center" style="max-width: 80%; margin: auto">
   <h4>Incoming requests to trade with you:<br><br></h4>
   <% inTrades.forEach(function(trade) { %>
-    <div  class="flex-trade-group">
+    <div  class="flex-trade-group" style="margin-bottom: 30px;">
       <div class="flex-trade-item">
-        <p style="margin:auto"><%=trade.initiator%> wants your</p>
-      </div>
-      <div class="flex-trade-item">
+        <p style="margin:auto"><%=trade.initiator%> wants your:</p>
         <img class="card-image" style="margin:auto" alt="image result" src="<%=trade.rCardImg%>">
       </div>
-      <div class="flex-trade-item">
-        <p style="margin:auto"> for </p>
-      </div>
-      <div class="flex-trade-item">
+      <div class="flex-trade-item" style="margin-left: 20px">
+        <p style="margin:auto">for his/her:</p>
         <img class="card-image" style="margin:auto" alt="image result" src="<%=trade.iCardImg%>">
       </div>
       <div class="flex-trade-item">
+        <p><br><br><br></p>
         <button id="accept_<%=trade._id%>" style="margin:auto" type="button" class = "btn btn-primary btn-sm">Accept</button>
         <button id="decline_<%=trade._id%>" style="margin:auto" type="button" class = "btn btn-primary btn-sm">Decline</button>
+        <p><br><br><br></p>
       </div>
     </div>
   
@@ -32,8 +30,19 @@
 <% inTrades.forEach(function(trade) { %>
   $("#accept_<%=trade._id%>").click(function() {
     var theTrade = <%-JSON.stringify(trade)%>;    
-    $.post("/tradeAccept", {trade_id: theTrade._id}, function() {
-      window.alert("Trade accepted!");
+    $.post("/tradeAccept", {trade_id: theTrade._id}, function(data) {
+      if(data == "success") {
+        alert("Trade completed!");
+      }
+      else if(data == "error1") {
+        alert("Trade aborted. Initiator no longer owns that card!"); 
+      }
+      else if(data == "error2") {
+        alert("Trade aborted. You no longer own that card!"); 
+      }
+      else {
+        alert("Trade aborted. Already cancelled by initiator"); 
+      }
       window.location.href = "/profile/<%=trade.recipient%>";      
     }); 
   });
