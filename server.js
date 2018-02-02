@@ -137,6 +137,59 @@ app.post("/tradeSubmit", isAuthenticated, function(req, res, next) {
   });  
 });
 
+app.get("/incomingTrades", isAuthenticated, function(req, res, next) {
+  Trade.find({recipient: req.user.username}, function(err, trades) {
+    if(err) { return next("Database error"); }
+    res.locals.inTrades = trades;
+    res.render("incoming_trades");
+  });
+});
+
+app.get("/outgoingTrades", isAuthenticated, function(req, res, next) {
+  Trade.find({initiator: req.user.username}, function(err, trades) {
+    if(err) { return next("Database error"); }
+    res.locals.outTrades = trades;
+    res.render("outgoing_trades");
+  });
+});
+
+app.post("/tradeAccept", isAuthenticated, function(req, res, next) {
+  var tradeId = req.body.trade_id;
+  console.log("tradeAccept id="+tradeId);
+  
+  Trade.findOne({_id: tradeId}, function(err, trade) {
+    if(err) { return next("Database error"); }
+    
+    Card.findOne({_id: trade.iCard}, function(err, iCard) {
+      if(err) { return next("Database error"); }
+      
+      iCard.owner = trade.recipient;
+      iCard.save(function(err) {
+        if(err) { return next("Updating iCard failed"); }    
+        
+        Card.findOne({_id: trade.rCard}, function(err, rCard) {
+          if(err) { return next("Database error"); }
+          rCard.owner = trade.initiator;
+          rCard.save(function(err) {
+            if(err) { return next("Updating rCard failed"); }            
+            console.log("updated both iCard and rCard");
+            Trade.find({_id: tradeId}).remove().exec();
+            res.sendStatus(200);
+          });
+        });   
+      });    
+    });
+  });
+});
+
+app.post("/tradeDecline", isAuthenticated, function(req, res, next) {
+  var tradeId = req.body.trade_id;
+  console.log("tradeDecline id="+tradeId);
+  Trade.find({_id: tradeId}).remove().exec();
+  res.sendStatus(200);
+});
+
+
 app.get("/profile/:username", function(req, res, next) {
   res.locals.username = req.params.username;
   
@@ -159,15 +212,6 @@ app.get("/profile/:username", function(req, res, next) {
       });      
       
     }
-  });
-});
-
-app.get("/incomingTrades", isAuthenticated, function(req, res, next) {
-
-  Trade.find({recipient: req.user.username}, function(err, trades) {
-    if(err) { return next("Database error"); }
-    res.locals.inTrades = trades;
-    res.render("incoming_trades");
   });
 });
 
@@ -195,14 +239,15 @@ app.post("/addCard", isAuthenticated, function(req, res, next) {
         image: newImage
       });      
       newCard.save(function(err, _newCard) {
-        req.user.cards.push(_newCard._id);
+        /*req.user.cards.push(_newCard._id);
         req.user.save(function(err) {
           if(err) {
               next("Adding card to user failed. err="+err);
               return;
           }
           res.redirect("/profile/"+req.user.username);
-        });
+        });*/
+        res.redirect("/profile/"+req.user.username);
       });
     }
   }).catch(function () {
@@ -211,6 +256,8 @@ app.post("/addCard", isAuthenticated, function(req, res, next) {
     res.redirect("/");
   });
 });
+
+
 
 app.post("/setAge", isAuthenticated, function(req, res, next) {
   var newAge = req.body.newAge;
@@ -237,6 +284,8 @@ app.post("/setLocation", isAuthenticated, function(req, res, next) {
     res.sendStatus(200);
   }); 
 });
+
+
 
 app.get("/login", function(req, res) {
   res.render("login");
@@ -279,7 +328,10 @@ app.post("/signup", function(req, res, next) {
   failureFlash: true
 }));
 
-
+app.use(function(err, req, res, next) {
+  req.flash("error", err);
+  res.redirect("/");
+});
 
 function isAuthenticated(req,res,next) {
   if(req.isAuthenticated()){

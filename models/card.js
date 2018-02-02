@@ -2,7 +2,7 @@ var mongoose = require("mongoose");
 
 var cardSchema = mongoose.Schema({
   owner: { type: String, required: true},
-  image: { type: String, required: true, unique: true }  
+  image: { type: String, required: true}  
 });
 
 

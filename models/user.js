@@ -6,8 +6,7 @@ var userSchema = mongoose.Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true},
   age: { type: String, required: false},
-  location: { type: String, required: false},  
-  cards: { type : Array , "default" : [] }
+  location: { type: String, required: false}
 });
 
 var noop = function() {};
