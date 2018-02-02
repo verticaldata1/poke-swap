@@ -1,0 +1,89 @@
+<% include _header %>
+
+<div class="jumbotron text-center" style="max-width: 80%; margin: auto">
+  <h4><%=username%><br><br></h4>
+  <img class="profile-image" alt="Profile Picture" src="https://vignette.wikia.nocookie.net/pokemon/images/b/b5/Rainbow_Badge.png/revision/latest?cb=20141009005938">
+  
+  <div id="viewAgeDiv">  
+    <h4 id="currentAge" style="display: inline"><br>age: <%=age%></h4>
+    <% if(currentUser && currentUser.username == username) { %>
+      <button id="editAge" type="button" class = "btn btn-primary btn-sm">Edit</button>
+    <% } %>
+  </div>
+  <div id="setAgeDiv" style="display: none">  
+    <h4 style="display: inline"><br></h4>
+    <input id="ageInput" type="text" placeholder="Age">
+    <button id="setAge" type="button" class = "btn btn-primary btn-sm">OK</button>    
+  </div>    
+    
+  <div id="viewLocationDiv">  
+    <h4 id="currentLocation" style="display: inline"><br>location: <%=location%></h4>
+    <% if(currentUser && currentUser.username == username) { %>
+      <button id="editLocation" type="button" class = "btn btn-primary btn-sm">Edit</button>
+    <% } %>
+    <h4><br></h4>
+  </div>
+  <div id="setLocationDiv" style="display: none">  
+    <h4 style="display: inline"><br></h4>
+    <input id="locationInput" type="text" placeholder="Location">
+    <button id="setLocation" type="button" class = "btn btn-primary btn-sm">OK</button>
+    <h4><br></h4>
+  </div>
+  
+  <% if(currentUser && currentUser.username == username) { %>
+    <form action="/addCard" method="post">
+      <label for="add-pokemon" style="font-size:16px">Catch a new pokemon:</label>
+      <input id="add-pokemon" name="pokemon" type="text" placeholder="Pokemon name" required>
+      <input type="submit" value="Catch" class="btn btn-primary btn-sm">
+    </form>
+  <% } else if(currentUser) { %>
+    <a href="/newTrade/<%=username%>" class="btn btn-primary btn-sm">Request Trade</a> 
+  <% } %>
+  <h4><br><br><%=username%>'s cards:<br><br></h4>
+  <div class = "flex-container">
+    <% cardImages.forEach(function(image) { %>
+      <img class="card-image" alt="image result" src="<%= image %>">   
+    <% }) %>
+  </div>
+  
+</div>
+
+
+<script>
+  $("#editAge").click(function() {
+    $("#viewAgeDiv").css("display", "none");
+    $("#setAgeDiv").css("display", "block");
+  });
+  
+  $("#setAge").click(function() {
+    var newAge = $("#ageInput").val();    
+
+    $.post('/setAge', {newAge: newAge}, function() {
+      console.log("setAge done");
+      var age = document.getElementById('currentAge');
+      age.innerHTML = "<br>age: " + newAge + "</h4";
+      $("#viewAgeDiv").css("display", "block");
+      $("#setAgeDiv").css("display", "none");
+    }); 
+  });
+  
+  $("#editLocation").click(function() {
+    $("#viewLocationDiv").css("display", "none");
+    $("#setLocationDiv").css("display", "block");
+  });
+  
+  $("#setLocation").click(function() {
+    var newLocation = $("#locationInput").val();    
+
+    $.post('/setLocation', {newLocation: newLocation}, function() {
+      console.log("setLocation done");
+      var age = document.getElementById('currentLocation');
+      age.innerHTML = "<br>location: " + newLocation + "</h4";
+      $("#viewLocationDiv").css("display", "block");
+      $("#setLocationDiv").css("display", "none");
+    }); 
+  });
+
+</script>
+</body>
+</html>

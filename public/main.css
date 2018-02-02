@@ -1,0 +1,53 @@
+
+.flex-container {
+  display: flex; 
+  flex-wrap: wrap;
+}
+
+.flex-item {
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: column;
+  height: 380px;
+}
+
+.card-image {
+  height: 330px;
+  width: 240px;
+  margin-left: 10px;
+  margin-bottom: 10px;
+}
+
+.flex-select-group{
+  display: flex; 
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.flex-select {
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: column;
+  height: 400px;
+  width: 250px;
+}
+.card-selection {
+  min-height: 40px;
+}
+.card-select-image {
+  height: 320px;
+  width: 240px;
+  margin: auto;
+}
+
+.flex-trade-group{
+  display: flex; 
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.flex-trade-item {
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: column;
+  height: 400px;
+  width: 250px;
+}
