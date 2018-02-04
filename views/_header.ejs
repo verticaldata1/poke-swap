@@ -19,8 +19,7 @@
           <% if(currentUser) { %>
             <li><a href="/incomingTrades"><%=incomingTrades%> incoming trades</a></li>
             <li><a href="/outgoingTrades"><%=outgoingTrades%> outgoing trades</a></li>
-            <% var profileLink="/profile/"+currentUser.username; %>
-            <li><a href=<%=profileLink%>><%= currentUser.username %></a></li>
+            <li><a href="/profile/<%=currentUser.username%>">My Profile</a></li>
             <li><a href="/logout">Log out</a></li>
           <% } else { %>
             <li><a href="/signup">Sign up</a></li>

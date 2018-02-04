@@ -2,7 +2,13 @@
 
 <div class="jumbotron" style="max-width: 80%; margin: auto">
   <div class="text-center">
-    <h1>Collect and Trade Pokemon Cards!<br><br></h1>
+    <h1>Collect and Trade Pokemon Cards!</h1>
+    <% if(currentUser) { %>
+      <h4>Visit your profile to catch Pokemon. Visit other profiles to request trades!</h4>
+    <% } else { %>
+      <h4>Sign in to get started!</h4>
+    <% } %>
+    </br></br>
 
     <div class = "flex-container">      
         <% allImages.forEach(function(image, ii) { %>
