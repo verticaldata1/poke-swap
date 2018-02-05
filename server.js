@@ -8,6 +8,7 @@ var passport = require("passport");
 var flash = require("connect-flash");
 var fetch = require("node-fetch");
 var setUpPassport = require("./setuppassport");
+var authRouter = require("./routes/authRoute.js");
 var User = require("./models/user");
 var Card = require("./models/card");
 var Trade = require("./models/trade");
@@ -35,6 +36,9 @@ app.use(passport.session());
 app.use(function(req, res, next) {
   res.locals.currentUser = req.user;
   res.locals.errors = req.flash("error");
+  next();
+});
+app.use(function(req, res, next) {
   res.locals.incomingTrades = 0;
   res.locals.outgoingTrades = 0;
   
@@ -55,9 +59,9 @@ app.use(function(req, res, next) {
   }
   else {
     next();    
-  }  
-  
+  }    
 });
+app.use(authRouter);
 
 app.get("/", function (req, res, next) {
   var allImages = [];
@@ -309,58 +313,10 @@ app.post("/setLocation", isAuthenticated, function(req, res, next) {
 });
 
 
-
-app.get("/login", function(req, res) {
-  res.render("login");
-});
-
-app.post("/login", passport.authenticate("login", {
-  successRedirect: "/",
-  failureRedirect: "/login",
-  failureFlash: true
-}));
-
-app.get("/logout", function (req, res) {
-  req.logout();
-  res.redirect("/");
-});
-
-app.get("/signup", function (req, res) {
-  res.render("signup");
-});
-
-app.post("/signup", function(req, res, next) {
-  var username = req.body.username;
-  var password = req.body.password;
-  
-  if(username.length > 20) {
-    req.flash("error", "Keep username under 20 characters!");
-    res.redirect("/signup");
-  }
-  else {
-    User.findOne({username: username}, function(err, user) {
-      if(err) { return next(err); }
-      if(user) {
-        req.flash("error", "Username taken");
-        return res.redirect("/signup");
-      }
-      var newUser = new User({
-        username: username,
-        password: password
-      });
-      newUser.save(next);
-    });
-  }
-}, passport.authenticate("login", {
-  successRedirect: "/",
-  failureRedirect: "/signup",
-  failureFlash: true
-}));
-
-app.use(function(err, req, res, next) {
-  req.flash("error", err);
-  res.redirect("/");
-});
+//app.use(function(err, req, res, next) {
+//  req.flash("error", err);
+//  res.redirect("/");
+//});
 
 function isAuthenticated(req,res,next) {
   if(req.isAuthenticated()){
